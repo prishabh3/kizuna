@@ -1,0 +1,78 @@
+// Kizuna DX — Prisma Schema (MySQL)
+// Dual-database architecture: structured data here, legacy/unstructured in MongoDB
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+model User {
+  id         Int       @id @default(autoincrement())
+  name       String    @db.VarChar(100)
+  email      String    @unique @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  role       UserRole  @default(EMPLOYEE)
+  department String    @db.VarChar(100)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  attendances Attendance[]
+  leaves      Leave[]
+
+  @@map("users")
+}
+
+model Attendance {
+  id        Int              @id @default(autoincrement())
+  userId    Int
+  date      DateTime         @db.Date
+  status    AttendanceStatus @default(PRESENT)
+  notes     String?          @db.Text
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
+  @@map("attendance")
+}
+
+model Leave {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  startDate DateTime    @db.Date
+  endDate   DateTime    @db.Date
+  reason    String      @db.Text
+  status    LeaveStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("leaves")
+}

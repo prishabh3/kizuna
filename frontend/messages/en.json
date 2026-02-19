@@ -1,0 +1,108 @@
+{
+    "nav": {
+        "dashboard": "HR Dashboard",
+        "kanban": "Project Board",
+        "agent": "AI Bridge",
+        "auditLogs": "Audit Logs"
+    },
+    "dashboard": {
+        "title": "HR Dashboard",
+        "subtitle": "Real-time overview of your organization",
+        "metrics": {
+            "totalEmployees": "Total Employees",
+            "activeProjects": "Active Projects",
+            "systemEfficiency": "System Efficiency",
+            "pendingLeaves": "Pending Leaves"
+        },
+        "table": {
+            "title": "Employee Directory",
+            "columns": {
+                "name": "Name",
+                "email": "Email",
+                "role": "Role",
+                "department": "Department",
+                "actions": "Actions"
+            },
+            "addEmployee": "Add Employee",
+            "edit": "Edit",
+            "delete": "Delete",
+            "confirmDelete": "Are you sure you want to delete this employee?",
+            "noData": "No employees found."
+        },
+        "modal": {
+            "addTitle": "Add New Employee",
+            "editTitle": "Edit Employee",
+            "fields": {
+                "name": "Full Name",
+                "email": "Email Address",
+                "password": "Password",
+                "role": "Role",
+                "department": "Department"
+            },
+            "save": "Save",
+            "cancel": "Cancel"
+        }
+    },
+    "kanban": {
+        "title": "Project Kanban Board",
+        "subtitle": "Modernized from legacy system via Strangler Fig adapter",
+        "columns": {
+            "TODO": "To Do",
+            "IN_PROGRESS": "In Progress",
+            "REVIEW": "Review",
+            "DONE": "Done"
+        },
+        "addTask": "Add Task",
+        "noTasks": "No tasks",
+        "priority": {
+            "LOW": "Low",
+            "MEDIUM": "Medium",
+            "HIGH": "High",
+            "CRITICAL": "Critical"
+        },
+        "seedData": "Load Sample Legacy Data",
+        "seeding": "Loading...",
+        "seedSuccess": "Legacy data loaded!",
+        "normalizedBadge": "Normalized",
+        "due": "Due"
+    },
+    "agent": {
+        "title": "Agentic API Bridge",
+        "subtitle": "Parse raw technical docs into structured Jira tickets",
+        "inputLabel": "Paste Raw Documentation",
+        "inputPlaceholder": "Paste API documentation, UI guidelines, or technical specifications here...",
+        "parseButton": "Parse with AI Agent",
+        "parsing": "Analyzing...",
+        "resultTitle": "Generated Jira Ticket",
+        "ticketId": "Ticket ID",
+        "summary": "Summary",
+        "description": "Description",
+        "acceptanceCriteria": "Acceptance Criteria",
+        "given": "Given",
+        "when": "When",
+        "then": "Then",
+        "jsonSchema": "Inferred API Schema",
+        "endpoint": "Endpoint",
+        "requestBody": "Request Body",
+        "responseBody": "Response Body",
+        "priority": "Priority",
+        "storyPoints": "Story Points",
+        "labels": "Labels",
+        "copyTicket": "Copy Ticket JSON",
+        "copied": "Copied!",
+        "emptyState": "Your structured ticket will appear here after parsing.",
+        "exampleDocs": "Try an example",
+        "history": "Recent Queries"
+    },
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "retry": "Retry",
+        "success": "Success",
+        "required": "required",
+        "optional": "optional",
+        "search": "Search...",
+        "filter": "Filter",
+        "clearFilters": "Clear Filters"
+    }
+}

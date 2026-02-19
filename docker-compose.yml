@@ -1,0 +1,92 @@
+version: "3.9"
+
+services:
+  # ─── MySQL ───────────────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: kizuna_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-kizuna_root}
+      MYSQL_DATABASE: ${MYSQL_DB:-kizuna_hr}
+      MYSQL_USER: ${MYSQL_USER:-kizuna}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-kizuna_pass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── MongoDB ─────────────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:6.0
+    container_name: kizuna_mongo
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-kizuna}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-kizuna_pass}
+      MONGO_INITDB_DATABASE: ${MONGO_DB:-kizuna_legacy}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Backend (Express) ───────────────────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: kizuna_backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER:-kizuna}:${MYSQL_PASSWORD:-kizuna_pass}@mysql:3306/${MYSQL_DB:-kizuna_hr}
+      MONGO_URI: mongodb://${MONGO_USER:-kizuna}:${MONGO_PASSWORD:-kizuna_pass}@mongodb:27017/${MONGO_DB:-kizuna_legacy}?authSource=admin
+      NODE_ENV: development
+    ports:
+      - "4000:4000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app/backend
+      - ./shared:/app/shared
+      - /app/backend/node_modules
+    command: npm run dev
+    working_dir: /app/backend
+
+  # ─── Frontend (Next.js) ──────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: kizuna_frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      NODE_ENV: development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+volumes:
+  mysql_data:
+  mongo_data:
